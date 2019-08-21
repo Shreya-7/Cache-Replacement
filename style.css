@@ -1,0 +1,76 @@
+.heading 
+{
+    height: 5%;
+    position: top;
+    text-align: center;
+    background-color: darkcyan;
+    padding-top: 4%;
+    padding-bottom: 3%;
+    font-size: 30px; 
+}
+.policy {
+    display: flex;
+    flex-direction: row;
+    margin: 2%;
+}
+button
+{
+   margin-left: 2%;
+   margin-right: 2%;
+   width: 200px;
+}
+.element_input
+{
+    display: flex;
+    flex-direction: row;
+    margin: 2%;
+}
+#value_input 
+{
+    margin-left: 2%;
+   margin-right: 2%;
+   width: 500px;
+   height: 50px;
+}
+.action
+{
+    display: flex;
+    flex-direction: row;
+    margin: 2%;
+    align-items: center;
+    align-self: center;
+}
+.blocks
+{
+    width: 70px;
+    margin: 1%;
+    height: 30;
+    text-align: center;
+    border-style: solid;
+    border-color: grey;
+}
+.value_blocks
+{
+    display: flex;
+    flex-direction: row;
+    margin-left: 10%;
+}
+.calculations
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+}
+#hits
+{    margin-left: 1%;
+    margin-right: 2%;
+    width: 100px;
+    height: 20px;
+}
+#miss
+{    margin-left: 1%;
+    margin-right: 2%;
+    width: 100px;
+    height: 20px;
+}
