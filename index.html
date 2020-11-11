@@ -6,103 +6,37 @@
 <body>
     <div class="heading"><b>Simulation of Cache Replacement Policies</b></div>
     <div class="element_input">
-            <p> Enter 10 space-separated values:</p>
-            <input autofocus id="value_input" />
-            <button type="submit" onclick="display_values()">Enter</button>
+            <p> Enter the no. of blocks :3 </p>
+            <input autofocus id="block_input" required />
+            <p id="value_form_label"> Enter some space separated values:</p>
+            <input id="value_input" required />
+            <button type="submit" id="submit">Enter</button>
     </div> 
     <div class="policy">
         <p>Choose a Cache Replacement Policy:  </p>
-        <button type="submit" onclick="fifo()" id="fifo"> FIFO </button>
-        <button type="submit" onclick="lru()" id="lru"> LRU </button>
-        <button type="submit" onclick="optimal()" id="optimal"> Optimal </button>
+        <button type="submit" id="fifo"> FIFO </button>
+        <button type="submit" id="lru"> LRU </button>
+        <button type="submit" id="optimal"> Optimal </button>
     </div> 
 
     <div class="action"> 
-        <div class="block_area">
-            <p class="blocks">Block 1</p>
-            <p class="blocks">Block 2</p>
-            <p class="blocks">Block 3</p>
-            <p class="blocks">Block 4</p>
-            <p class="blocks" style="background-color: teal"><b>Hit/Miss</b></p>
+        <div id="block_area">
+            
         </div>
-        <div class="value_blocks">
-            <div class="phase1">
-                <p class="blocks" id="b1">-</p>
-                <p class="blocks" id="b2">-</p>
-                <p class="blocks" id="b3">-</p>
-                <p class="blocks" id="b4">-</p>
-                <p class="blocks" id="h1"></p>        
-            </div>
-            <div class="phase2">
-                <p class="blocks" id="b5">-</p>
-                <p class="blocks" id="b6">-</p>
-                <p class="blocks" id="b7">-</p>
-                <p class="blocks" id="b8">-</p>
-                <p class="blocks" id="h2"></p>        
-            </div>
-            <div class="phase3">
-                <p class="blocks" id="b9">-</p>
-                <p class="blocks" id="b10">-</p>
-                <p class="blocks" id="b11">-</p>
-                <p class="blocks" id="b12">-</p>  
-                <p class="blocks" id="h3"></p>      
-            </div>
-            <div class="phase4">
-                <p class="blocks" id="b13">-</p>
-                <p class="blocks" id="b14">-</p>
-                <p class="blocks" id="b15">-</p>
-                <p class="blocks" id="b16">-</p>   
-                <p class="blocks" id="h4"></p>     
-            </div>
-            <div class="phase5">
-                    <p class="blocks" id="b17">-</p>
-                    <p class="blocks" id="b18">-</p>
-                    <p class="blocks" id="b19">-</p>
-                    <p class="blocks" id="b20">-</p> 
-                    <p class="blocks" id="h5"></p>       
-            </div>
-            <div class="phase6">
-                    <p class="blocks" id="b21">-</p>
-                    <p class="blocks" id="b22">-</p>
-                    <p class="blocks" id="b23">-</p>
-                    <p class="blocks" id="b24">-</p>
-                    <p class="blocks"id="h6"></p>        
-            </div>
-            <div class="phase7">
-                    <p class="blocks" id="b25">-</p>
-                    <p class="blocks" id="b26">-</p>
-                    <p class="blocks" id="b27">-</p>
-                    <p class="blocks" id="b28">-</p> 
-                    <p class="blocks" id="h7"></p>       
-            </div>
-            <div class="phase8">
-                    <p class="blocks" id="b29">-</p>
-                    <p class="blocks" id="b30">-</p>
-                    <p class="blocks" id="b31">-</p>
-                    <p class="blocks" id="b32">-</p>  
-                    <p class="blocks" id="h8"></p>      
-            </div>
-            <div class="phase9">
-                    <p class="blocks" id="b33">-</p>
-                    <p class="blocks" id="b34">-</p>
-                    <p class="blocks" id="b35">-</p>
-                    <p class="blocks" id="b36">-</p> 
-                    <p class="blocks" id="h9"></p>       
-            </div>
-            <div class="phase10">
-                    <p class="blocks" id="b37">-</p>
-                    <p class="blocks" id="b38">-</p>
-                    <p class="blocks" id="b39">-</p>
-                    <p class="blocks" id="b40">-</p>  
-                    <p class="blocks" id="h10"></p>      
-            </div>
+        <div id="value_blocks">
+            
         </div>
     </div>
     <div class="calculations">
-        <p>Hit Ratio: </p>
-        <p id="hits">0/10</p>
-        <p>Miss Ratio: </p>
-        <p id="miss">0/10</p>
+        <div>
+            <p>Hit Ratio: </p>
+            <p><span id="hits"></span><span class="deno"></span></p>
+        </div>
+        <div>
+            <p>Miss Ratio: </p>
+            <p><span id="miss"></span><span class="deno"></span></p>
+        </div>
+        
     </div>
     <script src="script.js"> </script>
 </body>

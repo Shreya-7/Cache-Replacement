@@ -1,245 +1,326 @@
-function display_values() //to set the array containing the values
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    document.querySelector('#submit').addEventListener('click', display_values);
+
+    document.querySelector('#fifo').addEventListener('click', function() {
+        refresh_all(); 
+        this.style.backgroundColor = "#009f9f";
+        cache(true, false, false);
+    });
+    document.querySelector('#lru').addEventListener('click', function() {
+        refresh_all(); 
+        this.style.backgroundColor = "#009f9f";
+        cache(false, true, false);
+    });
+    document.querySelector('#optimal').addEventListener('click', function() {
+        refresh_all(); 
+        this.style.backgroundColor = "#009f9f";
+        cache(false, false, true);
+    });
+});
+
+
+function makeDivs(blocks, numbers)
 {
-    refresh_all(); 
-    window.myvar; //making myvar a global variable
-    myvar = document.getElementById("value_input").value;
-    myvar =myvar.split(" ");
-    var i;
-    for(i=0; i<myvar.length; i++)
+    for(let i=0; i<=blocks; i++)
     {
-        myvar[i]=parseInt(myvar[i]);
-        if(myvar[i]>=0 && myvar[i]<=9) //checking for numeric
-            continue;
-        else
+        //creating blocks having block number
+        let p = document.createElement("p");
+        p.classList.add("blocks", "block-number");
+        p.innerText = "Block " + (i+1);
+
+        //hit/miss placeholder block
+        if(i==blocks)
         {
-            document.getElementById("value_input").value=""; //resetting the input field for wrong input
-            alert("Possible errors : \n 1) Please enter only numeric values. \n 2) Do not enter a space at the end!");
+            p.innerText = "Hit/Miss";
+            p.style.backgroundColor = "teal";
         }
+
+        document.getElementById("block_area").appendChild(p);
+    }
+
+    //creating actual blocks containing values
+    for(let i=0; i<numbers.length; i++)
+    {
+        let div = document.createElement("div");
+        div.classList.add("phase"+i);
+
+        //for every column
+        for(let j=1; j<=blocks+1; j++)
+        {
+            let mini = document.createElement("div");
+            mini.classList.add("blocks");
+
+            //value blocks
+            if(j<=blocks)
+                mini.setAttribute('id', "b"+(i*blocks+j));
+
+            //hit and miss block
+            else
+            {
+                mini.classList.add('status-block')
+                mini.setAttribute('id', "h"+(i+1));
+                mini.style.backgroundColor="gray";
+            }
+            div.appendChild(mini);
+        }
+
+        document.getElementById("value_blocks").appendChild(div);
     }
 }
 
-function refresh_all () //resetting everything for the new input
+//for every fresh input (not for changing policy for the same input)
+function display_values()
 {
-    document.getElementById("hits").innerText="0/10";
-    document.getElementById("miss").innerText="0/10";
-    for(i=1; i<=40; i++)
-        document.getElementById("b"+i).innerText='-';
-    for(i=1; i<=10; i++)
-        document.getElementById("h"+i).style.backgroundColor="white";
+    refresh_all();
+
+    //remove all blocks created for a fresh layout based on input
+    let blocks = Array.from(document.querySelectorAll(".blocks"));
+    blocks.forEach(element => element.remove());
+
+    window.myarray;
+    window.block;
+
+    //no of blocks
+    block = document.getElementById("block_input").value;
+    //actual inpu values
+    myarray = document.getElementById("value_input").value;
+
+    //inputID needed only to know which field to clear
+    function validateForInt(number, inputID)
+    {
+        number.trim();
+        let temp = parseInt(number);
+        if(isNaN(temp)==false)
+        {
+            return true;
+        }
+        else
+        {
+            alert("Please enter only numeric values!");
+            document.getElementById(inputID).value="";
+            return false;
+        }
+    }
+
+    //validate number of blocks
+    let temp = validateForInt(block, "block_input");
+    if(temp==true)
+        block = parseInt(block);
+
+    //validating value input
+    myarray = myarray.trim().split(" ");
+    for(let i=0; i<myarray.length; i++)
+    {
+        let temp = validateForInt(myarray[i], "value_input");
+        if(temp==true)
+            myarray[i] = parseInt(myarray[i]);
+    }
+
+    //setting denominator for the status
+    let status = Array.from(document.querySelectorAll(".deno"));
+    status.forEach(element => element.innerText="/"+myarray.length);
+
+    makeDivs(block, myarray);
+}
+
+//function to reset block content and hit&miss ratio
+function refresh_all()
+{
+    //set initial value for status
+    document.getElementById("hits").innerText='0';
+    document.getElementById("miss").innerText='0';
+    
+    let blocks = Array.from(document.querySelectorAll(".blocks"));
+    blocks.forEach(element => {
+
+        //if value block, not block containing block number
+        if(!'block-number' in element.classList)
+            element.innerHTML='';
+
+        //if hit&miss status block
+        if('status-block' in element.classList)
+            element.style.backgroundColor = 'gray';
+    });
+
+    //reset button colors
     document.getElementById("lru").style.backgroundColor="white";
     document.getElementById("fifo").style.backgroundColor="white";
     document.getElementById("optimal").style.backgroundColor="white";
 }
 
-function copy_initial_values(k) //copying those values to the next step which are already placed 
+function copy_initial_values(k)
 {
     var i, x;
-    for(i=1; i<=4; i++)
+    for(i=1; i<=block; i++)
     {
-        x=document.getElementById("b" + (4*(k-1)+i)).innerText;
-        if(x!='-')
-            document.getElementById("b" + (4*k +i)).innerText= parseInt(x);
+        x=document.getElementById("b" + (block*(k-1)+i)).innerText;
+        //if number is present
+        if(x!="")
+            document.getElementById("b" + (block*k +i)).innerText= parseInt(x);
+        //number not assigned yet
         else
             break;
     }
 }
 
-function update_ratio(k) //updating hit and miss ratios
+function update_ratio(k)
 {
-    var s, r;
-    if(k==1) //hit
-    {
-        s=document.getElementById("hits").innerText;
-        r= (parseInt(s[0])+1)+"/" +"10";
-        document.getElementById("hits").innerText=r;
-    }
-    else //miss
-    {
-        s=document.getElementById("miss").innerText;
-        r= (parseInt(s[0])+1)+"/" +"10";
-        document.getElementById("miss").innerText=r;
-    }
+    var s, r, status_id;
+
+    //determine whether hit or miss
+    if(k==1)
+        status_id = "hits"
+    else
+        status_id="miss"
+
+    //update ratio value
+    r = parseInt(document.getElementById(status_id).innerText) + 1;
+
+    //set ratio value
+    document.getElementById(status_id).innerText=r;
 }
 
-function color_hits_and_misses(a, given) //to update hit/miss status
+function color_hits_and_misses(a, given)
 {
-    if(a==0) //miss
-        document.getElementById(given).style.background="red";
-    else //hit
-        document.getElementById(given).style.background="green";
+    const colors = ['red', 'green'];
+    document.getElementById(given).style.backgroundColor=colors[a];
 }
 
-function check_for_present(queue, ele) //checking whether an entry is already present
+function check_for_present(queue, ele)
 {
-    var i, x;
-    for(i=0; i<4; i++)
+    var i;
+    for(i=0; i<block; i++)
     {
         if(queue[i]==ele)
-            return 1;
+            return true;
     }
-    return 0;
+    return false;
 }
 
-function fifo() 
+
+function cache(fifo, lru, optimal)
 {
-    refresh_all();
-    document.getElementById("fifo").style.backgroundColor="#009f9f"; 
-    var i, j, r=0,k;
+    // i - loop counter, r - phase counter
+    var i=0, j, r=0, k;
     var queue = []; //to store entry sequence, to decide which to eliminate
     (function theLoop (i) {
         setTimeout(function () {
-            if(i!=0) //copying values except for the 1st one
-            copy_initial_values(i);
-       if(document.getElementById("b"+(4*i+4)).innerText=='-' && i<4) //insert directly, applicable only for 1st 4
-       {    
-          // alert("b"+(4*i+r)); 
-          color_hits_and_misses(0,"h" + (i+1) );     
-           document.getElementById("b" + (4*i+r+1)).innerText=myvar[i];
-           r=r+1; 
-           queue.push(myvar[i]);
-           update_ratio(0);          
-       }
-       else if (check_for_present(queue, myvar[i])==1) //gives a hit
-       {
-            color_hits_and_misses(1,"h" + (i+1));
-            update_ratio(1);
-       }
-       else //using fifo
-       {
-            j=queue.shift() //popping the element
-            for(k=1; k<=4; k++)
+
+            //copying previous values
+            if(i!=0)
+                copy_initial_values(i);
+
+            //insert directly, applicable only for 1st 4
+            if(document.getElementById("b"+(block*i+block)).innerText=='' && i<block)
+            {    
+                color_hits_and_misses(0,"h" + (i+1) );     
+                document.getElementById("b" + (block*i+r+1)).innerText=myarray[i];
+                r=r+1; 
+                queue.push(myarray[i]);
+                update_ratio(0);          
+            }
+
+            // hit found
+            else if (check_for_present(queue, myarray[i]))
             {
-                if(parseInt(document.getElementById("b" + (4*(i-1)+k)).innerText) == j)
+                // refresh entry position for LRU
+                if (lru)
                 {
-                    document.getElementById("b" + (4*i+k)).innerText = myvar[i]; //updating the new value
-                    color_hits_and_misses(0, "h"+(i+1));
-                    update_ratio(0);
-                    queue.push(myvar[i]); //pushing the new value in the queue
+                    for(k=0; k<block; k++)
+                    {
+                        if(queue[k]==myarray[i])
+                                queue.splice(k,1); //removing from queue
+                    }
+
+                    // adding at the back, thus "renewed"
+                    queue.push(myarray[i]);
+                }
+                color_hits_and_misses(1,"h" + (i+1));
+                update_ratio(1);
+                    
+            }
+            
+            // replacement logic
+            else
+            {
+                // find a replacement using FIFO
+                if(fifo || lru)
+                {
+                    j=queue.shift() //popping the element
+
+                    // find which block has the element to be replaced
+                    for(k=1; k<=block; k++)
+                    {
+                        if(parseInt(document.getElementById("b" + (block*(i-1)+k)).innerText) == j)
+                        {
+                            // updating the value
+                            document.getElementById("b" + (block*i+k)).innerText = myarray[i];
+
+                            // push new value in the queue
+                            queue.push(myarray[i]);
+                        }
+                    }
+                }
+
+                // use OPTIMAL logic
+                else
+                {
+                    var l, pos;
+                    var distance, max_distance=0;
+
+                    // find element which is farthest in the input from the current point
+                    for(l=0; l<block; l++)
+                    {
+                        // set default; to find if no element is being repeated
+                        distance = myarray.length+1;
+
+                        for(k=i+1; k<myarray.length; k++)
+                        {
+                            if(document.getElementById("b"+(block*(i-1)+l+1)).innerText==myarray[k])
+                            {
+                                distance = k;
+                                break;
+                            }
+                        }
+
+                        // if the current element is farthest, store it's block number in pos
+                        if(distance>max_distance)
+                        {
+                            max_distance = distance;
+                            pos = l;
+                        }
+                    }
+
+                    // getting the element to be replaced
+                    j=document.getElementById("b"+(block*(i-1)+pos+1)).innerText;
+
+                    // insert the new value
+                    document.getElementById("b" + (block*i+pos+1)).innerText = myarray[i];
+                }
+
+                color_hits_and_misses(0, "h"+(i+1));
+                update_ratio(0);                    
+            }
+
+            if(optimal)
+            {
+                for(k=0; k<block; k++) //updating the current state of elements
+                {
+                    queue[k]=document.getElementById("b"+(block*i+k+1)).innerText;
                 }
             }
-       }
-          if (++i < myvar.length) {          // If i > 0, keep going
-            theLoop(i);       // Call the loop again, and pass it the current value of i
-          }
-        }, 1500);
-      })(0);
 
+            // loop condition
+            if (++i < myarray.length) 
+            { 
+                theLoop(i); // Call the loop again, and pass it the increased value of i
+            }
+        }, 1500);
+    })(0); // i = 0 initially
 }
 
-function lru()
-{
-    refresh_all();
-    document.getElementById("lru").style.backgroundColor="#009f9f";
-    var i, j, r=0,k;
-    var queue = []; //to store entry sequence, to decide which to eliminate
-    (function theLoop (i) {
-        setTimeout(function () {
-            if(i!=0) //copying values except for the 1st one
-            copy_initial_values(i);
-       if(document.getElementById("b"+(4*i+4)).innerText=='-' && i<4) //insert directly, applicable only for 1st 4
-       {    
-          // alert("b"+(4*i+r)); 
-          color_hits_and_misses(0,"h" + (i+1) );     
-           document.getElementById("b" + (4*i+r+1)).innerText=myvar[i];
-           r=r+1; 
-           queue.push(myvar[i]);
-           update_ratio(0);          
-       }
-       else if (check_for_present(queue, myvar[i])==1) //refreshing position of already-present entry
-       {
-           for(k=0; k<4; k++)
-           {
-               if(queue[k]==myvar[i])
-                    queue.splice(k,1); //removing from queue
-           }
-           queue.push(myvar[i]); //re-inserting in queue with new priority
-            color_hits_and_misses(1,"h" + (i+1));
-            update_ratio(1);
-       }
-       else //using fifo
-       {
-            j=queue.shift() //popping element
-            for(k=1; k<=4; k++)
-            {
-                if(parseInt(document.getElementById("b" + (4*(i-1)+k)).innerText) == j) 
-                {
-                    document.getElementById("b" + (4*i+k)).innerText = myvar[i]; //inserting the new value
-                    color_hits_and_misses(0, "h"+(i+1));
-                    update_ratio(0);
-                    queue.push(myvar[i]); //pushing the new value in the queue
-                }
-            }
-       }
-          if (++i < myvar.length) {          // If i > 0, keep going
-            theLoop(i);       // Call the loop again, and pass it the current value of i
-          }
-        }, 1500);
-      })(0);
-}
 
-function optimal()
-{
-    refresh_all();
-    document.getElementById("optimal").style.backgroundColor="#009f9f"; 
-    var i, j, r=0,k;
-    var queue = []; //to store entry sequence, to decide which to eliminate
-    (function theLoop (i) {
-        setTimeout(function () {
-            if(i!=0) //copying values except for the 1st one
-            copy_initial_values(i);
-       if(document.getElementById("b"+(4*i+4)).innerText=='-' && i<4) //insert directly, applicable only for 1st 4
-       {    
-          // alert("b"+(4*i+r)); 
-          color_hits_and_misses(0,"h" + (i+1) );     
-           document.getElementById("b" + (4*i+r+1)).innerText=myvar[i];
-           r=r+1; 
-           update_ratio(0);          
-       }
-       else if (check_for_present(queue, myvar[i])==1) //gives a hit
-       {
-            color_hits_and_misses(1,"h" + (i+1));
-            update_ratio(1);
-       }
-       else //using optimal
-       {
-           var farthest=[];
-           var l, max=0, pos;
-           for(l=0; l<4; l++) //for each element present, finding the next occurence
-           {
-               farthest.push(12); //default value - does not appear again
-                for(k=i+1; k<myvar.length; k++)
-                {
-                    if(document.getElementById("b"+(4*(i-1)+l+1)).innerText==myvar[k])
-                        farthest[l]=k;
-                }
-            }
-            for(k=0; k<4; k++) //finding the pos of the one with the furthest occurence
-            {
-                if(farthest[k]>max)
-                {
-                    max=farthest[k];
-                    pos=k;
-                }
-            }
-            j=document.getElementById("b"+(4*(i-1)+pos+1)).innerText; //getting the element
-            for(k=1; k<=4; k++) //to replace at the same block as the one getting replaced
-            {
-                if(parseInt(document.getElementById("b" + (4*(i-1)+k)).innerText) == j) //finding the block
-                {
-                    document.getElementById("b" + (4*i+k)).innerText = myvar[i]; //inserting the new value
-                    color_hits_and_misses(0, "h"+(i+1));
-                    update_ratio(0);
-                }
-            }
-       }
-       for(k=0; k<4; k++) //updating the current state of elements
-       {
-           queue[k]=document.getElementById("b"+(4*i+k+1)).innerText;
-       }
-          if (++i < myvar.length) {          // If i > 0, keep going
-            theLoop(i);       // Call the loop again, and pass it the current value of i
-          }
-        }, 1500);
-      })(0);
-    
-}
+
+
