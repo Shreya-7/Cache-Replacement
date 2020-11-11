@@ -1,15 +1,17 @@
-# Cache-Replacement
+# Cache Replacement
 A simulation of FIFO, LRU and Optimal Cache Replacement Policies
 
-A visual simulation of these policies + hit/miss ratio calculations for every new entry.
+Try it: https://shreya-7.github.io/Cache-Replacement/
 
-Assumptions:
-1) Input values range: 0-9 (both inclusive)
-2) No. of inputs: 10
-(to be made dynamic later)
+A visual, real-time simulation of these policies + hit/miss ratio calculations for every new entry.
+Enter the number of blocks and the values you want to insert, click on Enter to see the setup visual and then select a policy.
 
-TODO:
-1) Dynamic number of blocks
-2) Dynamic number of entries
-3) Clean up UI
-4) Switching between policies mid-way
+TODO:  
+- Can check_for_present be replaced by in?
+- For optimal, store all positions beforehand, no calculations needed
+- Add fifo to optimal
+- Stop spillovers
+- Maintain queue for optimal
+- Store block number in the queue
+- Switching policies midway
+- STYLING
