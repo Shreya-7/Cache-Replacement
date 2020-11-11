@@ -18,20 +18,32 @@ button
    margin-left: 2%;
    margin-right: 2%;
    width: 200px;
+   height: 50px;
 }
 .element_input
 {
     display: flex;
     flex-direction: row;
     margin: 2%;
+    vertical-align: middle;
 }
-#value_input 
+
+#value_input
 {
-    margin-left: 2%;
+   margin-left: 2%;
    margin-right: 2%;
    width: 500px;
    height: 50px;
 }
+
+#block_input
+{
+    margin-left: 2%;
+    margin-right: 2%;
+    width: 100px;
+    height: 40px;
+}
+
 .action
 {
     display: flex;
@@ -39,6 +51,7 @@ button
     margin: 2%;
     align-items: center;
     align-self: center;
+    align-content: center;
 }
 .blocks
 {
@@ -49,7 +62,7 @@ button
     border-style: solid;
     border-color: grey;
 }
-.value_blocks
+#value_blocks
 {
     display: flex;
     flex-direction: row;
@@ -61,6 +74,10 @@ button
     flex-direction: row;
     justify-content: center;
     align-self: center;
+}
+.calculations div
+{
+    margin: 2%;
 }
 #hits
 {    margin-left: 1%;
